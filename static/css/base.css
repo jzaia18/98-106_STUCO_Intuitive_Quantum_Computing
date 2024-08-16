@@ -1,0 +1,24 @@
+table, table td, table th {
+    border: 1px solid black;
+}
+
+table td, table th {
+    padding: 5pt;
+}
+
+table th, table tr:nth-child(odd) td{
+    background-color: rgba(255, 255, 255, 0.25);
+}
+table tr:nth-child(even) td{
+    background-color: rgba(220, 220, 220, 0.25);
+}
+
+body {
+    margin: 20px;
+    background-color: aliceblue;
+}
+
+.section {
+    margin-top: 20px;
+}
+
