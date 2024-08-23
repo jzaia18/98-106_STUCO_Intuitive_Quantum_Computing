@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="robots" content="nofollow">
+
+        <title>Shor's Algorithm Playground</title>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link rel="stylesheet" href="static/css/base.css">
+        <link rel="stylesheet" href="static/css/shor.css">
+
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <!-- Bootstrap JavaScript -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        <!-- Bootstrap JavaScript Bundle -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Shor's Algorithm Playground</h1>
+            Note: for large values of p and q, this page may run extremely slowly.
+
+            <br />
+            <br />
+
+            <h2>RSA Setup</h2>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Multiplicative Group Modulus
+                    </h5>
+
+                    <form id="shor-modulus-form" class="was-validated">
+                        <h6>Select 2 prime values p and q</h6>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-p-desc">p=</span>
+                            <input id="shor-p" class="form-control" type="number" min="2" value="3" onchange="update_N()" onchange="validate_modulus()" required />
+                            <div class="invalid-feedback">p must be prime. If this condition is not met, the rest of this program may not work properly.</div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-q-desc">q=</span>
+                            <input id="shor-q" class="form-control" type="number" min="2" value="5" onchange="update_N()" onchange="validate_modulus()" required />
+                            <div class="invalid-feedback">q must be prime and different from p. If this condition is not met, the rest of this program may not work properly.</div>
+                        </div>
+
+                        <h6>The group modulus is the product of p and q</h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-N-desc">N=p*q</span>
+                            <input id="shor-N" class="form-control" type="number" disabled />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Key Selection
+                    </h5>
+
+                    <form id="shor-key-form" class="was-validated">
+                        <h6>
+                            The totient function finds the number of integers coprime with the modulus.
+                            For RSA, φ(N) = (p-1)(q-1)
+                        </h6>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-totN-desc">φ(N)=</span>
+                            <input id="shor-totN" class="form-control" type="number" disabled />
+                        </div>
+
+                        <h6>
+                            Select a short key to use for encryption.
+                            It must be between 1 and φ(N) and coprime with φ(N), and should be small.
+                        </h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-e-desc">e=</span>
+                            <input id="shor-e" class="form-control" type="number" min="2" value="3" onchange="update_e()" required />
+                            <div class="invalid-feedback">e must be greater than 1 and less than φ(N) and e must be coprime with φ(N)</div>
+                        </div>
+
+                        <h6>The decryption key will be the modular multiplicative inverse of the encryption key.</h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-d-desc">d ≡ e<sup>-1</sup> (mod N)</span>
+                            <input id="shor-d" class="form-control" type="number" disabled />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Sending Messages
+                    </h5>
+
+                    <form id="shor-msg-form" class="was-validated">
+                        <h6>Select a message to send. (Must be between 1 and N)</h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-m-desc">m=</span>
+                            <input id="shor-m" class="form-control" type="number" value="3" onchange="update_m()" required />
+                            <div class="invalid-feedback">m must be between 1 and N.</div>
+                        </div>
+
+                        <h6>The message is encrypted.</h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-c-desc">c ≡ m<sup>e</sup> (mod N)</span>
+                            <input id="shor-c" class="form-control" type="number" disabled />
+                        </div>
+
+                        <h6>Sanity check: decrypting the message should get back to the original.</h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-mdec-desc">m ≡<sup>?</sup> c<sup>d</sup> (mod N)</span>
+                            <input id="shor-mdec" class="form-control" type="number" disabled />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <br />
+
+            <h2>Breaking RSA</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Finding the Order of an Element
+                    </h5>
+
+                    <form id="shor-order-form" class="was-validated">
+                        <h6>Select a value to test. (Must be between 2 and N-1)</h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-a-desc">a=</span>
+                            <input id="shor-a" class="form-control" type="number" min="2" value="3" onchange="update_a()" required />
+                            <div class="invalid-feedback">a must be between 2 and N-1.</div>
+                        </div>
+
+                        <h6>Check the GCD of a and N, a lucky guess gives a factor.</h6>
+                        Recall that finding the GCD of 2 numbers is polynomial time (fast).
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-K-desc">K=gcd(a, N)</span>
+                            <input id="shor-K" class="form-control" type="number" disabled />
+                        </div>
+
+                        <h6>
+                            We compute the order.
+                            Classically, this is exponentially slow, but this can be done quickly on a quantum computer.
+                            <br />
+                            <span class="warning-msg">
+                                WARNING: If the chosen modulus above is too large, this step will take extremely long.
+                            </span>
+                        </h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-r-desc">r=</span>
+                            <input id="shor-r" class="form-control" disabled />
+                            <input id="shor-r-fake" class="form-control" type="number" hidden />
+                            <div class="invalid-feedback">r was not able to be calculated. This may indicate that `a` shares a factor with N (in which case you're done factoring).</div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Using r to Find p and q
+                    </h5>
+
+                    For the following steps, `r` needs to be even.
+                    If it is not, try a different value of `a`.
+
+                    <form id="shor-order-form" class="was-validated">
+                        <h6>Test the suspected values</h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-v1-desc">v<sub>1</sub>= a<sup>r/2</sup>+1</span>
+                            <input id="shor-v1" class="form-control" disabled />
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-v2-desc">v<sub>2</sub>= a<sup>r/2</sup>-1</span>
+                            <input id="shor-v2" class="form-control" disabled />
+                            <input id="shor-v-fake" class="form-control" hidden />
+                            <div class="invalid-feedback">Cannot compute using odd or non-existent value for `r`</div>
+                        </div>
+
+                        <h6>Next, we compute the GCDs of v<sub>1</sub> and v<sub>2</sub> with N</h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-g1-desc">g<sub>1</sub>= gcd(v<sub>1</sub>, N)</span>
+                            <input id="shor-g1" class="form-control" disabled />
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="shor-g2-desc">g<sub>2</sub>= gcd(v<sub>2</sub>, N)</span>
+                            <input id="shor-g2" class="form-control" disabled />
+                            <input id="shor-g-fake" class="form-control" hidden />
+                            <div class="invalid-feedback">Cannot compute using odd or non-existent value for `r`</div>
+                        </div>
+
+                        <p>
+                            If g<sub>1</sub> or g<sub>2</sub> are not trivial (1 or N), they should be either `p` or `q`.
+                            Try different values of `a` until you can find one, the likelihood is pretty high in practice.
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="static/js/shor.js"></script>
+    </body>
+</html>

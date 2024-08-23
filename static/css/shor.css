@@ -1,0 +1,29 @@
+.card-title {
+    text-align: center;
+}
+
+.card {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.card h6 {
+    margin-top: 15px;
+}
+
+.card input {
+    margin-bottom: 10px;
+}
+
+.input-group-text {
+    min-width: 130px;
+}
+
+body {
+    padding-bottom: 100px;
+}
+
+.warning-msg {
+    font-weight: bold;
+    color: #dc3545;
+}
