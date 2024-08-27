@@ -2,3 +2,8 @@
     max-width: 85%;
     max-height: 80vh;
 }
+
+.warning {
+    font-weight: bold;
+    color: darkred;
+}
