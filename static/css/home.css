@@ -3,6 +3,11 @@
     max-height: 80vh;
 }
 
+#alice-full, #alice-head {
+    max-width: 45%;
+    max-height: 80vh;
+}
+
 .warning {
     font-weight: bold;
     color: darkred;
