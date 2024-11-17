@@ -135,7 +135,7 @@
                         <h6>Select a value to test. (Must be between 2 and N-1)</h6>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="shor-a-desc">a=</span>
-                            <input id="shor-a" class="form-control" type="number" min="2" value="3" onchange="update_a()" required />
+                            <input id="shor-a" class="form-control" type="number" min="2" value="2" onchange="update_a()" required />
                             <div class="invalid-feedback">a must be between 2 and N-1.</div>
                         </div>
 
@@ -151,14 +151,14 @@
                             Classically, this is exponentially slow, but this can be done quickly on a quantum computer.
                             <br />
                             <span class="warning-msg">
-                                WARNING: If the chosen modulus above is too large, this step will take extremely long.
+                                WARNING: If the chosen modulus above is too large, this step will take extremely long and may abort.
                             </span>
                         </h6>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="shor-r-desc">r=</span>
                             <input id="shor-r" class="form-control" disabled />
                             <input id="shor-r-fake" class="form-control" type="number" hidden />
-                            <div class="invalid-feedback">r was not able to be calculated. This may indicate that `a` shares a factor with N (in which case you're done factoring).</div>
+                            <div class="invalid-feedback">r was not able to be calculated. This may indicate that `a` shares a factor with N (in which case you're done factoring) or it may indicate that the operation was aborted due to time constraints.</div>
                         </div>
 
                     </form>
